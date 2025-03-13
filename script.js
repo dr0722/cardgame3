@@ -17,6 +17,10 @@ let imageOptions = [];
 let correctImageIndex = null;
 let isGameActive = false;
 
+// Speech synthesis setup
+const speechSynthesis = window.speechSynthesis;
+let speechVoices = [];
+
 // DOM Elements
 const setupScreen = document.getElementById('setup-screen');
 const gameScreen = document.getElementById('game-screen');
@@ -36,6 +40,20 @@ const wordSound = document.getElementById('word-sound');
 const successSound = document.getElementById('success-sound');
 const errorSound = document.getElementById('error-sound');
 const completeSound = document.getElementById('complete-sound');
+
+// Load available voices for speech synthesis
+function loadVoices() {
+    speechVoices = speechSynthesis.getVoices();
+    console.log("Speech voices loaded:", speechVoices.length);
+}
+
+// Try to load voices immediately
+loadVoices();
+
+// Some browsers load voices asynchronously
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+}
 
 // Event Listeners
 startButton.addEventListener('click', startGame);
@@ -321,12 +339,55 @@ function playCurrentWordSound() {
     const word = words[currentWordIndex];
     if (!word) return;
     
-    // Use the free Text-to-Speech API
+    console.log("Playing pronunciation for word:", word);
+    
+    // Cancel any ongoing speech
+    speechSynthesis.cancel();
+    
+    // Create new speech utterance
+    const utterance = new SpeechSynthesisUtterance(word);
+    
+    // Try to select English voice if available
+    let englishVoice = speechVoices.find(voice => 
+        voice.lang.includes('en') && !voice.lang.includes('en-in')
+    );
+    
+    if (englishVoice) {
+        utterance.voice = englishVoice;
+    }
+    
+    // Set speech properties
+    utterance.rate = 0.9;  // Slightly slower for clearer pronunciation
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    // Add error handling
+    utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event);
+        fallbackSpeech(word);
+    };
+    
+    // Speak the word
+    speechSynthesis.speak(utterance);
+    
+    // Provide visual feedback that the sound button was clicked
+    soundButton.classList.add('playing');
+    setTimeout(() => {
+        soundButton.classList.remove('playing');
+    }, 500);
+}
+
+// Fallback using audio element if speech synthesis fails
+function fallbackSpeech(word) {
+    console.log("Using fallback speech for:", word);
+    
+    // Try using the free Text-to-Speech API as fallback
     const ttsUrl = `https://api.voicerss.org/?key=66b4580e7a0c4c1da33f396f8c3eb5be&hl=en-us&v=Amy&c=MP3&f=16khz_16bit_stereo&src=${encodeURIComponent(word)}`;
     
     wordSound.src = ttsUrl;
     wordSound.play().catch(error => {
         console.error('Error playing sound:', error);
+        alert("無法發音此單字，請檢查您的音訊設置。");
     });
 }
 
