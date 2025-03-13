@@ -152,15 +152,16 @@ button:hover {
 
 .image-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 1rem;
     margin: 1rem 0;
 }
 
 .image-container img {
-    max-width: 100%;
-    height: auto;
+    flex: 0 0 auto;
+    width: 150px;
+    height: 150px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
