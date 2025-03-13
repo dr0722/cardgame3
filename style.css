@@ -56,5 +56,98 @@ main {
     flex-direction: column;
 }
 
-.island-background {
-    background-image: url('https://cdn.pixabay.com/photo/2017/09/16/01
+.setup-island, .result-island {
+    padding: 2rem;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.setup-content, .result-content {
+    text-align: center;
+}
+
+.game-header {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-content {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+textarea#word-input {
+    width: 100%;
+    max-width: 400px;
+    height: 100px;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border: 2px solid #2c88d9;
+    border-radius: 8px;
+    resize: none;
+}
+
+button {
+    background-color: #2c88d9;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #1f6dad;
+}
+
+.word-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#current-word {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c88d9;
+}
+
+.sound-button {
+    padding: 0.5rem;
+    background: none;
+}
+
+.sound-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.image-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.feedback {
+    text-align: center;
+    margin: 1rem 0;
+    min-height: 50px;
+}
+
+.treasure-image {
+    width: 150px;
+    height: 150px;
+    margin: 2rem 0;
+}
