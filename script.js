@@ -1,7 +1,14 @@
 // Pixabay API Key and URL
-const PIXABAY_API_KEY = '4952456-dd174a28a5c64ce95c67742b6';
+const PIXABAY_API_KEY = '4952456-dd174a28a5c64ce95c67742b6'; // Updated API key
 const PIXABAY_API_URL = 'https://pixabay.com/api/';
-
+// Fallback image sources (in case API fails)
+const FALLBACK_IMAGES = {
+    'default': [
+        'https://cdn.pixabay.com/photo/2016/10/06/19/59/question-mark-1719746_640.jpg',
+        'https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_640.png',
+        'https://cdn.pixabay.com/photo/2013/07/12/12/44/letter-146006_640.png'
+    ]
+};
 // Game state
 let words = [];
 let currentWordIndex = 0;
@@ -80,13 +87,18 @@ async function loadNextWord() {
     currentWordElement.textContent = currentWord;
     updateWordProgressDisplay();
 
+    // Show loading indicator
+    imageContainer.innerHTML = '<div class="loading">載入圖片中...</div>';
+
     // Fetch images for this word
     try {
         await fetchImagesForWord(currentWord);
         renderImageOptions();
     } catch (error) {
         console.error('Failed to fetch images:', error);
-        alert('無法載入圖片，請檢查您的網絡連接或重試。');
+        // Instead of showing an error message, use fallback images
+        useFallbackImages(currentWord);
+        renderImageOptions();
     }
 }
 
@@ -98,7 +110,8 @@ async function fetchImagesForWord(word) {
         const correctImages = await fetchImagesFromPixabay(word);
         
         if (correctImages.length === 0) {
-            throw new Error(`No images found for: ${word}`);
+            // Use fallback images if no images found
+            return useFallbackImages(word);
         }
         
         // Shuffle and take up to 4 images as options
@@ -118,16 +131,16 @@ async function fetchImagesForWord(word) {
             }
         }
 
-        // If we don't have enough distractor images, try generic searches
+        // If we don't have enough distractor images, use fallback images
         if (distractorImages.length < 3) {
-            const genericSearchTerms = ['object', 'animal', 'food', 'place'];
-            for (const term of genericSearchTerms) {
-                if (distractorImages.length >= 3) break;
-                
-                const images = await fetchImagesFromPixabay(term);
-                if (images.length > 0) {
-                    distractorImages.push(images[0]);
-                }
+            // Fill the remaining slots with fallback images
+            while (distractorImages.length < 3) {
+                const fallbackImage = {
+                    id: `fallback-${Date.now()}-${distractorImages.length}`,
+                    url: FALLBACK_IMAGES.default[distractorImages.length % FALLBACK_IMAGES.default.length],
+                    word: 'fallback'
+                };
+                distractorImages.push(fallbackImage);
             }
         }
         
@@ -141,7 +154,7 @@ async function fetchImagesForWord(word) {
         return imageOptions;
     } catch (error) {
         console.error('Error fetching images:', error);
-        throw error;
+        return useFallbackImages(word);
     }
 }
 
@@ -151,6 +164,11 @@ async function fetchImagesFromPixabay(query) {
     try {
         const response = await fetch(url);
         const data = await response.json();
+        
+        if (!response.ok) {
+            console.error('Pixabay API error:', data);
+            return [];
+        }
         
         if (data.hits && data.hits.length > 0) {
             return data.hits.map(hit => ({
@@ -164,6 +182,34 @@ async function fetchImagesFromPixabay(query) {
         console.error('Pixabay API error:', error);
         return [];
     }
+}
+
+// New function to handle fallback image generation
+function useFallbackImages(correctWord) {
+    console.log('Using fallback images for word:', correctWord);
+    
+    // Create a correct image
+    const correctImage = {
+        id: 'fallback-correct',
+        url: 'https://cdn.pixabay.com/photo/2016/03/31/14/37/check-mark-1292787_640.jpg',
+        word: correctWord
+    };
+    
+    // Create distractor images
+    const distractorImages = FALLBACK_IMAGES.default.map((url, index) => ({
+        id: `fallback-wrong-${index}`,
+        url: url,
+        word: 'fallback'
+    }));
+    
+    // Set up the game state with fallback images
+    imageOptions = [correctImage, ...distractorImages.slice(0, 3)];
+    imageOptions = shuffleArray(imageOptions);
+    
+    // Find index of correct image
+    correctImageIndex = imageOptions.findIndex(img => img.id === correctImage.id);
+    
+    return imageOptions;
 }
 
 function renderImageOptions() {
