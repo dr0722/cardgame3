@@ -1,5 +1,5 @@
 // Pixabay API Key and URL
-const PIXABAY_API_KEY = '36693166-55356465caa0b4a1576022a46';
+const PIXABAY_API_KEY = '4952456-dd174a28a5c64ce95c67742b6';
 const PIXABAY_API_URL = 'https://pixabay.com/api/';
 
 // Game state
