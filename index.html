@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單字尋寶 (Word Treasure Hunt)</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>單字尋寶 <span>(Word Treasure Hunt)</span></h1>
+        </header>
+
+        <main>
+            <div id="setup-screen" class="screen active">
+                <div class="island-background setup-island">
+                    <div class="setup-content">
+                        <h2>歡迎來到寶藏島!</h2>
+                        <p>請輸入單字，用逗號分隔 (例如: tree, bird, flower)</p>
+                        <textarea id="word-input" placeholder="輸入單字，用逗號分隔..."></textarea>
+                        <button id="start-button">開始遊戲</button>
+                        <p class="example-text">範例: tree, bird, flower, sun, fish, cat, dog, apple</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="game-screen" class="screen">
+                <div class="island-background">
+                    <div class="game-header">
+                        <div class="word-display">
+                            <div id="current-word">Tree</div>
+                            <button id="sound-button" class="sound-button">
+                                <img src="https://cdn-icons-png.flaticon.com/512/727/727269.png" alt="Play sound">
+                            </button>
+                        </div>
+                        <div class="score-display">分數: <span id="current-score">0</span></div>
+                        <div class="progress-display">
+                            單字: <span id="word-progress">1/5</span>
+                        </div>
+                    </div>
+
+                    <div class="image-container" id="image-container">
+                        <!-- Images will be inserted here -->
+                    </div>
+
+                    <div class="feedback" id="feedback">
+                        <div class="feedback-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result-screen" class="screen">
+                <div class="island-background result-island">
+                    <div class="result-content">
+                        <h2 id="final-score-text">太棒了! 100 分!</h2>
+                        <div class="treasure-container">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3275/3275796.png" alt="Treasure" class="treasure-image">
+                        </div>
+                        <button id="restart-button">再玩一次</button>
+                        <button id="new-words-button">輸入新單字</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <audio id="word-sound"></audio>
+    <audio id="success-sound" src="https://soundbible.com/mp3/Ta Da-SoundBible.com-1884170640.mp3" preload="auto"></audio>
+    <audio id="error-sound" src="https://soundbible.com/mp3/Computer Error-SoundBible.com-399240927.mp3" preload="auto"></audio>
+    <audio id="complete-sound" src="https://soundbible.com/mp3/Kids Cheering-SoundBible.com-1471383416.mp3" preload="auto"></audio>
+    
+    <script src="script.js"></script>
+</body>
+</html>

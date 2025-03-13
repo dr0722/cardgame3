@@ -1,0 +1,333 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f0f7ff;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-family: 'Comic Neue', cursive;
+    color: #2c88d9;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+h1 span {
+    font-size: 1.8rem;
+    color: #5aa6e6;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen {
+    display: none;
+    flex-grow: 1;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.island-background {
+    background-image: url('https://cdn.pixabay.com/photo/2017/09/16/01/27/island-2754198_1280.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+}
+
+.island-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.75);
+    z-index: 0;
+}
+
+/* Setup Screen */
+.setup-island {
+    justify-content: center;
+    align-items: center;
+}
+
+.setup-content {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.setup-content h2 {
+    color: #2c88d9;
+    margin-bottom: 15px;
+    font-family: 'Comic Neue', cursive;
+    font-size: 1.8rem;
+}
+
+.setup-content p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+#word-input {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    border: 2px solid #5aa6e6;
+    border-radius: 8px;
+    resize: none;
+    font-family: 'Open Sans', sans-serif;
+}
+
+button {
+    background-color: #2c88d9;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Comic Neue', cursive;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #1a6db8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.example-text {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Game Screen */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.word-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#current-word {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c88d9;
+    font-family: 'Comic Neue', cursive;
+}
+
+.sound-button {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.sound-button:hover {
+    transform: scale(1.1);
+}
+
+.sound-button img {
+    width: 30px;
+    height: 30px;
+}
+
+.score-display, .progress-display {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.image-card {
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.image-card:hover {
+    transform: scale(1.05);
+}
+
+.image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: none;
+}
+
+.feedback-content {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 20px 40px;
+    border-radius: 15px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    font-family: 'Comic Neue', cursive;
+}
+
+.feedback.success .feedback-content {
+    color: #28a745;
+}
+
+.feedback.error .feedback-content {
+    color: #dc3545;
+}
+
+/* Result Screen */
+.result-island {
+    justify-content: center;
+    align-items: center;
+}
+
+.result-content {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+#final-score-text {
+    color: #2c88d9;
+    margin-bottom: 20px;
+    font-family: 'Comic Neue', cursive;
+    font-size: 2rem;
+}
+
+.treasure-container {
+    margin: 20px 0;
+}
+
+.treasure-image {
+    width: 150px;
+    height: auto;
+    animation: bounce 2s infinite;
+}
+
+.result-content button {
+    margin: 10px;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .game-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .image-card {
+        width: 150px;
+        height: 150px;
+    }
+    
+    #current-word {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-card {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .setup-content, .result-content {
+        padding: 20px;
+    }
+}
