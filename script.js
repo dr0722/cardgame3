@@ -459,4 +459,47 @@ document.addEventListener('DOMContentLoaded', function() {
             menu.classList.remove('active');
         }
     });
+    
+    // 取得卡牌圖片
+    fetchCardImages();
 });
+
+// 從我們的後端 API 取得圖片
+async function fetchCardImages() {
+    const query = 'fantasy+cards';
+    const url = `/api/images?query=${query}`;
+    
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.hits && data.hits.length > 0) {
+            displayCardImages(data.hits);
+        }
+    } catch (error) {
+        console.error('無法載入圖片：', error);
+    }
+}
+
+// 顯示卡牌圖片
+function displayCardImages(images) {
+    const cardElements = document.querySelectorAll('.card');
+    
+    images.forEach((image, index) => {
+        if (cardElements[index]) {
+            const img = document.createElement('img');
+            img.src = image.webformatURL;
+            img.alt = `卡牌 ${index + 1}`;
+            img.classList.add('card-image');
+            
+            // 清空舊內容並加入圖片
+            cardElements[index].innerHTML = '';
+            cardElements[index].appendChild(img);
+            
+            // 添加標題
+            const title = document.createElement('p');
+            title.textContent = `卡牌 ${index + 1}`;
+            cardElements[index].appendChild(title);
+        }
+    });
+}
