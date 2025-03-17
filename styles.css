@@ -1,0 +1,159 @@
+/* 基本重置樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "微軟正黑體", Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* 導航欄樣式 */
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu {
+    display: flex;
+    list-style: none;
+}
+
+.menu li {
+    margin-right: 1.5rem;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.menu a:hover {
+    color: #3498db;
+}
+
+.hamburger {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* 主區塊樣式 */
+.hero {
+    text-align: center;
+    padding: 3rem 0;
+    background-color: #ecf0f1;
+}
+
+.hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* 卡牌區塊 */
+.card-gallery {
+    padding: 3rem 0;
+}
+
+.card-gallery h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card {
+    flex-basis: calc(25% - 20px);
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* 頁尾樣式 */
+footer {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+}
+
+/* 響應式設計 - 平板 */
+@media (max-width: 768px) {
+    .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #2c3e50;
+        padding: 1rem 0;
+    }
+    
+    .menu.active {
+        display: flex;
+    }
+    
+    .menu li {
+        margin: 0;
+        text-align: center;
+        padding: 0.5rem 0;
+    }
+    
+    .hamburger {
+        display: block;
+    }
+    
+    .card {
+        flex-basis: calc(50% - 15px);
+    }
+}
+
+/* 響應式設計 - 手機 */
+@media (max-width: 480px) {
+    .card {
+        flex-basis: 100%;
+    }
+    
+    .hero h2 {
+        font-size: 2rem;
+    }
+}
+
+/* 圖片響應式 */
+img {
+    max-width: 100%;
+    height: auto;
+}

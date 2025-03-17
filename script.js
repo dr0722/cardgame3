@@ -434,3 +434,29 @@ function getRandomWordsExcept(excludeWord) {
 
 // Initialize the game by showing setup screen
 showScreen(setupScreen);
+
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
+    
+    hamburger.addEventListener('click', function() {
+        menu.classList.toggle('active');
+    });
+    
+    // 在小屏幕點擊選單項目後自動收起選單
+    const menuItems = document.querySelectorAll('.menu a');
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                menu.classList.remove('active');
+            }
+        });
+    });
+    
+    // 響應視窗大小變化
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            menu.classList.remove('active');
+        }
+    });
+});
