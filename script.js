@@ -13,6 +13,7 @@ const FALLBACK_IMAGES = {
 let words = [];
 let currentWordIndex = 0;
 let score = 0;
+let maxPossibleScore = 0;
 let imageOptions = [];
 let correctImageIndex = null;
 let isGameActive = false;
@@ -82,6 +83,7 @@ async function startGame() {
     // Reset game state
     currentWordIndex = 0;
     score = 0;
+    maxPossibleScore = words.length * 10; // Each word is worth 10 points
     isGameActive = true;
 
     // Update UI
@@ -287,7 +289,7 @@ function showFeedback(message, type) {
 }
 
 function updateScoreDisplay() {
-    currentScoreElement.textContent = score;
+    currentScoreElement.textContent = `${score}/${maxPossibleScore}`;
 }
 
 function updateWordProgressDisplay() {
@@ -300,8 +302,19 @@ function endGame() {
     // Play completion sound
     playSound(completeSound);
     
-    // Update result screen
-    finalScoreElement.textContent = `太棒了! ${score} 分!`;
+    // Calculate score percentage for more meaningful feedback
+    const scorePercentage = (score / maxPossibleScore) * 100;
+    
+    // Update result screen with appropriate message based on score
+    if (scorePercentage === 100) {
+        finalScoreElement.textContent = `太棒了! 滿分 ${score} 分!`;
+    } else if (scorePercentage >= 80) {
+        finalScoreElement.textContent = `很好! 得分 ${score}/${maxPossibleScore} 分!`;
+    } else if (scorePercentage >= 50) {
+        finalScoreElement.textContent = `做得不錯! 得分 ${score}/${maxPossibleScore} 分!`;
+    } else {
+        finalScoreElement.textContent = `再接再厲! 得分 ${score}/${maxPossibleScore} 分!`;
+    }
     
     // Show result screen
     showScreen(resultScreen);
