@@ -439,61 +439,192 @@ document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
     const menu = document.querySelector('.menu');
     
-    hamburger.addEventListener('click', function() {
-        menu.classList.toggle('active');
-    });
+    // 確保漢堡選單按鈕正常工作
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            console.log('漢堡選單被點擊');
+            menu.classList.toggle('active');
+        });
+    }
     
-    // 在小屏幕點擊選單項目後自動收起選單
+    // 確保選單項目點擊正常工作
     const menuItems = document.querySelectorAll('.menu a');
     menuItems.forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function(e) {
+            console.log('選單項目被點擊', this.href);
+            // 如果不是真正的頁面導航，防止預設行為
+            if (this.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+            }
+            
             if (window.innerWidth <= 768) {
                 menu.classList.remove('active');
             }
         });
     });
     
-    // 響應視窗大小變化
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768) {
-            menu.classList.remove('active');
-        }
+    // 卡牌點擊事件
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            console.log('卡牌被點擊');
+            this.classList.toggle('flipped');
+        });
     });
     
-    // 取得卡牌圖片
-    fetchCardImages();
-});
-
-// 從我們的後端 API 取得圖片
-async function fetchCardImages() {
-    const query = 'fantasy+cards';
-    const url = `/api/images?query=${query}`;
+    // 恢復遊戲功能
+    initializeGame();
     
+    // 嘗試獲取圖片（如果API設置好了）
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        if (data.hits && data.hits.length > 0) {
-            displayCardImages(data.hits);
-        }
+        fetchCardImages();
     } catch (error) {
         console.error('無法載入圖片：', error);
     }
+});
+
+// 初始化遊戲
+function initializeGame() {
+    console.log('遊戲初始化中...');
+    // 建立遊戲區域按鈕
+    const gameSection = document.querySelector('.card-gallery');
+    if (gameSection) {
+        // 添加開始遊戲按鈕
+        const startButton = document.createElement('button');
+        startButton.textContent = '開始遊戲';
+        startButton.classList.add('game-button');
+        startButton.addEventListener('click', function() {
+            console.log('開始遊戲被點擊');
+            alert('遊戲開始！');
+            shuffleCards();
+        });
+        
+        // 添加重置遊戲按鈕
+        const resetButton = document.createElement('button');
+        resetButton.textContent = '重置遊戲';
+        resetButton.classList.add('game-button');
+        resetButton.addEventListener('click', function() {
+            console.log('重置遊戲被點擊');
+            alert('遊戲已重置！');
+            resetGame();
+        });
+        
+        // 建立按鈕容器
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+        buttonContainer.appendChild(startButton);
+        buttonContainer.appendChild(resetButton);
+        
+        // 添加到遊戲區域
+        gameSection.appendChild(buttonContainer);
+    }
+}
+
+// 洗牌功能
+function shuffleCards() {
+    console.log('洗牌中...');
+    const cards = document.querySelectorAll('.card');
+    const cardsArray = Array.from(cards);
+    const container = document.querySelector('.cards');
+    
+    if (container && cardsArray.length > 0) {
+        // 移除所有卡牌
+        cardsArray.forEach(card => container.removeChild(card));
+        
+        // 隨機排序
+        for (let i = cardsArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [cardsArray[i], cardsArray[j]] = [cardsArray[j], cardsArray[i]];
+        }
+        
+        // 重新添加卡牌
+        cardsArray.forEach(card => container.appendChild(card));
+        console.log('洗牌完成');
+    }
+}
+
+// 重置遊戲
+function resetGame() {
+    console.log('重置遊戲...');
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.classList.remove('flipped', 'matched');
+    });
+    console.log('遊戲已重置');
+}
+
+// 從我們的後端API或直接調用獲取圖片
+async function fetchCardImages() {
+    console.log('嘗試獲取卡牌圖片...');
+    
+    try {
+        // 首先嘗試從後端API獲取
+        let data;
+        try {
+            const response = await fetch('/api/images?query=fantasy+cards');
+            data = await response.json();
+        } catch (serverError) {
+            console.warn('後端API不可用，嘗試直接調用Pixabay API');
+            
+            // 如果後端API失敗，嘗試直接調用Pixabay API（不推薦在生產環境使用）
+            const apiKey = '4952456-dd174a28a5c64ce95c67742b6'; // 僅用於示範
+            const query = 'fantasy+cards';
+            const directResponse = await fetch(`https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&per_page=4`);
+            data = await directResponse.json();
+        }
+        
+        if (data && data.hits && data.hits.length > 0) {
+            displayCardImages(data.hits);
+            console.log('成功獲取圖片');
+        } else {
+            console.error('圖片數據格式不正確');
+            useDefaultCardImages();
+        }
+    } catch (error) {
+        console.error('獲取圖片時發生錯誤:', error);
+        useDefaultCardImages();
+    }
+}
+
+// 當API調用失敗時使用預設卡牌
+function useDefaultCardImages() {
+    console.log('使用預設卡牌圖片');
+    const cardElements = document.querySelectorAll('.card');
+    
+    cardElements.forEach((card, index) => {
+        // 清空現有內容
+        card.innerHTML = '';
+        
+        // 添加預設樣式
+        card.style.backgroundColor = `hsl(${index * 90}, 70%, 80%)`;
+        card.style.display = 'flex';
+        card.style.justifyContent = 'center';
+        card.style.alignItems = 'center';
+        
+        // 添加卡牌標題
+        const title = document.createElement('p');
+        title.textContent = `卡牌 ${index + 1}`;
+        title.style.fontWeight = 'bold';
+        card.appendChild(title);
+    });
 }
 
 // 顯示卡牌圖片
 function displayCardImages(images) {
+    console.log('顯示卡牌圖片');
     const cardElements = document.querySelectorAll('.card');
     
     images.forEach((image, index) => {
         if (cardElements[index]) {
+            // 清空舊內容
+            cardElements[index].innerHTML = '';
+            
             const img = document.createElement('img');
             img.src = image.webformatURL;
             img.alt = `卡牌 ${index + 1}`;
             img.classList.add('card-image');
             
-            // 清空舊內容並加入圖片
-            cardElements[index].innerHTML = '';
+            // 添加圖片
             cardElements[index].appendChild(img);
             
             // 添加標題
